@@ -1,0 +1,33 @@
+else if($action=='btn-cat'){
+    $name=$_POST['name'];
+    $status=$_POST['status'];
+    $qry="select * from category where cat_name=?";
+    $stmt=mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($stmt,$qry)){
+        echo "Failed Statements";
+    }else{
+        mysqli_stmt_bind_param($stmt, 'ss',$name,$status);
+        mysqli_stmt_execute($stmt);
+        $result=mysqli_stmt_get_result($stmt);
+        $rowcount=mysqli_num_rows($result);
+        if($rowcount > 1){
+            echo "Category exists";
+        }else{
+            $instqry="insert into category(cat_name, status) values(?,?)";
+            $inststmt=mysqli_stmt_init($conn);
+            if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                echo "Failed Statements";
+            }else{
+                mysqli_stmt_bind_param($inststmt, 'ss', $name,$status);
+                mysqli_stmt_execute($inststmt);
+                echo "Category Added";?>
+                <script>
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                </script>
+            <?php }
+
+        }
+    }
+}
