@@ -32,6 +32,8 @@ if($action=='btn-login'){
 }else if($action=="btn-cat"){
     $name=$_POST['name'];
     $status=$_POST['status'];
+    $id=$_POST['txt-id'];
+    if(empty($id)){
     $qry="select * from category where cat_name=?";
     $stmt=mysqli_stmt_init($conn);
     if(!mysqli_stmt_prepare($stmt,$qry)){
@@ -41,7 +43,7 @@ if($action=='btn-login'){
         mysqli_stmt_execute($stmt);
         $result=mysqli_stmt_get_result($stmt);
         $rowcount=mysqli_num_rows($result);
-        if($rowcount > 1){
+        if($rowcount > 0){
             echo "Category exists";
         }else{
             $instqry="insert into category(cat_name, status) values(?,?)";
@@ -59,16 +61,237 @@ if($action=='btn-login'){
                 </script>
             <?php }
         }
+    
+}
+}else{
+    $instqry="update category set cat_name=?, status=? where id=?";
+            $inststmt=mysqli_stmt_init($conn);
+            if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                echo "Failed Statements";
+            }else{
+                mysqli_stmt_bind_param($inststmt,'sss',$name,$status,$id);
+                mysqli_stmt_execute($inststmt);
+                echo "Updated";?>
+                <script>
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                </script>
+            <?php }
 }
 }else if($action=="btn-del-cat"){
-    if($conn->query("delete * from category where id=".$_POST['data'])){
-        echo "Deleted";
-    }else{
+    if($conn->query("delete from category where id=".$_POST['data'])){
+        echo "Deleted";?>
+            <script>
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+            </script>
+    <?php }else{
         echo "Failed";
     }
 
-}
+}else if($action=='btn-del-sup'){
+    if($conn->query("delete from supplier where id=".$_POST['data'])){
+        echo "Deleted";?>
+            <script>
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+            </script>
+    <?php }else{
+        echo "Failed";
+    }
+}else if($action=="btn-sup"){
+    $name=$_POST['name'];
+    $id=$_POST['txt-id'];
+    if(empty($id)){
+    $qry="select * from supplier where supplier=?";
+    $stmt=mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($stmt,$qry)){
+        echo "Failed Statements";
+    }else{
+        mysqli_stmt_bind_param($stmt, 's',$name);
+        mysqli_stmt_execute($stmt);
+        $result=mysqli_stmt_get_result($stmt);
+        $rowcount=mysqli_num_rows($result);
+        if($rowcount > 0){
+            echo "Supplier exists";
+        }else{
+            $instqry="insert into supplier(supplier) values(?)";
+            $inststmt=mysqli_stmt_init($conn);
+            if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                echo "Failed Statements";
+            }else{
+                mysqli_stmt_bind_param($inststmt,'s',$name);
+                mysqli_stmt_execute($inststmt);
+                echo "Supplier Added";?>
+                <script>
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                </script>
+            <?php }
+        }
+    }
+}else{
+    $instqry="update supplier set supplier=? where id=?";
+    $inststmt=mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($inststmt,$instqry)){
+        echo "Failed Statements";
+    }else{
+        mysqli_stmt_bind_param($inststmt,'ss',$name, $id);
+        mysqli_stmt_execute($inststmt);
+        echo "Updated";?>
+        <script>
+            setTimeout(() => {
+                location.reload()
+            }, 2000);
+        </script>
+<?php }
+    }
+}else if($action=="btn-pro"){
+    $name=$_POST['name'];
+    $id=$_POST['txt-id'];
+    $targetDir = "products/";
+    $fileName = basename($_FILES["file"]["name"]);
+    $targetFilePath = $targetDir . $fileName;
+    $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
+    if(empty($id)){
+    $qry="select * from products where name=?";
+    $stmt=mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($stmt,$qry)){
+        echo "Failed Statements";
+    }else{
+        mysqli_stmt_bind_param($stmt, 's',$name);
+        mysqli_stmt_execute($stmt);
+        $result=mysqli_stmt_get_result($stmt);
+        $rowcount=mysqli_num_rows($result);
+        if($rowcount > 0){
+            echo "Product exists";
+        }else{
+              if(!empty($_FILES["file"]["name"])){
+                // Allow certain file formats
+                $allowTypes = array('jpg','png','jpeg');
+                if(in_array($fileType, $allowTypes)){
+                    // Upload file to server
+                    if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
+                        // Insert image file name into database
+            
+                        $instqry="insert into products(name, photo) values(?,?)";
+                        $inststmt=mysqli_stmt_init($conn);
+                        if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                            echo "Failed Statements";
+                        }else{
+                            mysqli_stmt_bind_param($inststmt,'ss',$name,$fileName);
+                            mysqli_stmt_execute($inststmt);
+                            echo "Product Added";
+                            ?>
+                            <script>
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 2000);
+                            </script>
+                        <?php }
+                    }else{
+                        echo "Sorry, there was an error uploading your file.";
+                    }
+                }else{
+                    echo 'Sorry, only JPG, JPEG and PNG files are allowed to upload.';
+                }
+            }else{
+                echo 'Please select a file to upload.';
+            }
+        }
+        }
+    }else if(!empty($fileName)){
+        // update
+        if(!empty($_FILES["file"]["name"])){
+            // Allow certain file formats
+            $allowTypes = array('jpg','png','jpeg');
+            if(in_array($fileType, $allowTypes)){
+                // Upload file to server
+                if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
+                    // Insert image file name into database
+                    // delete previous image
+                    $query ="SELECT * FROM products where id='$id' ";
+                    $gotton=$conn->query($query);
+                    while($row = mysqli_fetch_assoc($gotton)){
+                            $imageURL = 'products/'.$row["photo"];
+                    //check if image exists
+                        
+                    if(file_exists($imageURL)){
+                    
+                        //delete the image
+                        unlink($imageURL);
+                    }
+                    $instqry="update products set name=?, photo=? where id=?";
+                    $inststmt=mysqli_stmt_init($conn);
+                    if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                        echo "Failed Statements";
+                    }else{
+                        mysqli_stmt_bind_param($inststmt,'sss',$name,$fileName,$id);
+                        mysqli_stmt_execute($inststmt);
 
-
+                        
+                        echo "Updated";
+                    }
+                    }
+                }else{
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }else{
+                echo 'Sorry, only JPG, JPEG and PNG files are allowed to upload.';
+            }
+        }else{
+            echo 'Please select a file to upload.';
+        }?>
+            <script>
+                setTimeout(() => {
+                    location.reload()
+                }, 2000);
+            </script>
+    <?php }else{
+        $instqry="update products set name=? where id=?";
+        $inststmt=mysqli_stmt_init($conn);
+        if(!mysqli_stmt_prepare($inststmt,$instqry)){
+            echo "Failed Statements";
+        }else{
+            mysqli_stmt_bind_param($inststmt,'ss',$name,$id);
+            mysqli_stmt_execute($inststmt);
+            echo "Updated";
+        }?>
+        <script>
+            setTimeout(() => {
+                location.reload()
+            }, 2000);
+        </script>
+    <?php }
+    }else if($action=="btn-del-pro"){
+        $packageId=$_POST['data'];
+        $query ="SELECT * FROM products where id='$packageId' ";
+        $gotton=$conn->query($query);
+        while($row = mysqli_fetch_assoc($gotton)){
+                $imageURL = 'products/'.$row["photo"];
+          //check if image exists
+            
+          if(file_exists($imageURL)){
+        
+            //delete the image
+            unlink($imageURL);
+          }
+            //after deleting image you can delete the record
+            if($conn->query("delete from products where id='$packageId'")){
+                echo "Deleted";
+                ?><script>
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+            </script><?php
+            }else{
+                echo "Failed";
+            }
+          }
+    }
 /*end*/
 ?>

@@ -1,6 +1,7 @@
-<div id="jibu"><i class='fa fa-close'style="color:red"></i> <span id="la-jibu"></div>
 <?php
 include('navbar.php');?>
+<div id="jibu"> <span id="la-jibu"></span> <i class='fa fa-close'style="color:red"></i></div>
+<div id="darkness"></div>
 <!-- home page -->
 <div class="home-panel">
 <?php include('topbar.php');
@@ -16,6 +17,14 @@ if($_GET['link']=='logout'){
     include('category.php');
 }else if($_GET['link']=='supplier'){
     include('supplier.php');
+}else if($_GET['link']=='product'){
+    include('product.php');
+}else if($_GET['link']=='expenses'){
+    include('expense.php');
+}else if($_GET['link']=='report'){
+    include('report.php');
+}else if($_GET['link']=='sales'){
+    include('sales.php');
 }
 ?>
 </div>

@@ -1,4 +1,4 @@
-<p class="page-title">DASHBOARD</p>
+<p class="page-title">Home > Dashboard</p>
 <div class="page-panel">
     <div class="home-page">
     <div class="dash-card">
@@ -28,5 +28,15 @@
             <p>100</p>
         </div>
     </div>
+    <div class="dash-card">
+        <div class="card-detail card-4">
+
+        </div>
+        <div class="card-no">
+        <h5>Products</h5>
+            <p>100</p>
+        </div>
+    </div>
 </div>
+<h5  class="karibu-msg">Welcome Administrator</h5>
 </div>
