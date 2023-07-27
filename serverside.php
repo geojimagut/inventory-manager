@@ -292,6 +292,56 @@ if($action=='btn-login'){
                 echo "Failed";
             }
           }
+}else if($action=='btn-inventory'){
+    $product=$_POST['product'];
+    $supplier=$_POST['supplier'];
+    $category=$_POST['category'];
+    $quantity=$_POST['quantity'];
+    $unit=$_POST['unit'];
+    $total=$_POST['buying-price'];
+    $final="0";
+    $qry="select * from inventory where product_id=? and previous_quantity >?";
+    $stmt=mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($stmt,$qry)){
+        echo "Failed Statements";
+    }else{
+        mysqli_stmt_bind_param($stmt, 'ss',$product,$final);
+        mysqli_stmt_execute($stmt);
+        $result=mysqli_stmt_get_result($stmt);
+        $rowcount=mysqli_num_rows($result);
+        if($rowcount > 0){
+            ?>
+            <script>
+                var status=confirm('Product already exists in the inventory, do you want to update?')
+                
+            </script>
+            <?php
+        }else{
+            $instqry="insert into inventory(product_id, supplier_id, category_id, previous_quantity, new_quantity, measurement_unit, total_bp) values(?,?,?,?,?,?,?)";
+            $inststmt=mysqli_stmt_init($conn);
+            if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                echo "Failed Statements";
+            }else{
+                mysqli_stmt_bind_param($inststmt,'sssssss',$product,$supplier,$category,$quantity,$quantity,$unit,$total);
+                mysqli_stmt_execute($inststmt);
+                echo "Item Added to Inventory";?>
+                 <script>
+                    setTimeout(() => {
+                        location.reload()
+                    }, 2000);
+                 </script>
+            <?php }
+        }
+    
     }
+}
+
+
+
+
+
+
+
+
 /*end*/
 ?>

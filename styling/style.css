@@ -321,3 +321,10 @@ table span{
 .btn-cancel{
     background-color: rgb(100,100,100);
 }
+.two-parts{
+    display:flex;
+    flex-wrap:no-wrap;
+}
+.two-parts input[type=number]{
+    margin-right:5%;
+}

@@ -1,10 +1,14 @@
 <div id="invent-item">
 <div class="invent-form">
-        <form action="">
-        <select name="" id="">
-                <option value=""selected="false"disabled>Product</option>
-                <option value="">Supplier 1</option>
-                <option value="">Supplier 2</option>
+        <form action=""id="frmInventory">
+        <select name="product" id="">
+        <option value=""selected="false"disabled>Product</option>
+                <?php
+                    $result=$conn->query("select * from products order by id desc");
+                    while($row=mysqli_fetch_assoc($result)){?>
+                        <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                    <?php }
+                ?>
             </select>
             <select name="supplier" id=""required>
                 <option value=""selected="false"disabled>Supplier</option>
@@ -24,16 +28,16 @@
                     <?php }
                 ?>
             </select>
-            <input type="number"placeholder="Quantity">
-            <input type="number"placeholder="Total Buying Price">
-            <input type="number"placeholder="Individual Selling Price">
-            <!-- <span>Total Selling Price</span>
-            <input type="text"readonly> -->
-        </form>
+            <div class="two-parts">
+            <input type="number"placeholder="Quantity"name="quantity">
+            <input type="text"placeholder="Measurement Unit"name="unit">
+            </div>
+            <input type="number"placeholder="Total Buying Price"name="buying-price">
 </div>
 <div class="invent-bottom">
     <button>SAVE</button>
     <span class="btn-cancel">CANCEL</span>
+        </form>
 </div>
 </div>
 
@@ -70,30 +74,22 @@
             </tbody>
         </table>
     </div>
-    <!--div class="add-side">
-        <span class="page-title">ADD CATEGORY</span>
-        <form action="">
-            <input type="text"placeholder="Item Name">
-            <input type="number"placeholder="Quantity">
-            <input type="number"placeholder="Total Price">
-            <input type="file">
-            <select name="" id="">
-                <option value=""selected="false"disabled>Supplier</option>
-                <option value="">Supplier 1</option>
-                <option value="">Supplier 2</option>
-            </select>
-            <select name="" id="">
-                <option value=""selected="false"disabled>Category</option>
-                <option value="">Category 1</option>
-                <option value="">Category 2</option>
-            </select>
-            <button>SAVE</button>
-        </form>
-    </div-->
 </div>
 </div>
 <?php include('footer.php');?>
 <script>
+    $('#frmInventory').on('submit', function(e){
+        e.preventDefault()
+        $.ajax({
+            url:'serverside.php?action=btn-inventory',
+            method:'POST',
+            data:$('#frmInventory').serialize(),
+            success:function(resp){
+                $('#la-jibu').html(resp);
+                document.getElementById('jibu').style.display='flex'
+            }
+        })
+    })
     $('#btn-add-item').on('click', function(){
         document.getElementById('invent-item').style.display='block'
         document.getElementById('darkness').style.display='block'
