@@ -19,15 +19,6 @@
                     <?php }
                 ?>
             </select>
-            <select name="category" id=""required>
-            <option value=""selected="false"disabled>Category</option>
-            <?php
-                    $result=$conn->query("select * from category where status='1' order by id desc");
-                    while($row=mysqli_fetch_assoc($result)){?>
-                        <option value="<?php echo $row['id'];?>"><?php echo $row['cat_name'];?></option>
-                    <?php }
-                ?>
-            </select>
             <div class="two-parts">
             <input type="number"placeholder="Quantity"name="quantity">
             <input type="text"placeholder="Measurement Unit"name="unit">
@@ -53,24 +44,31 @@
         <table id="tbl"cellspacing="0">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Buying Price</th>
-                    <th>Selling Price</th>
-                    <th>Action</th>
+                    <th hidden>#</th>
+                    <th style="width:20%">Item Name</th>
+                    <th style="width:20%">Category</th>
+                    <th style="width:20%">Supplier</th>
+                    <th style="width:15%">Quantity</th>
+                    <th style="">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Kitchen Appliances</td>
-                    <td>Active</td>
-                    <td>Something</td>
-                    <td>Something</td>
-                    <td>
+            <?php $result=$conn->query("select * from (select inventory.id as proid, product_id, supplier_id, previous_quantity, new_quantity, measurement_unit,total_bp from inventory) inventory  inner join products on product_id=products.id inner join supplier on supplier_id = supplier.id inner join category on products.category=category.id order by proid desc");
+                    while($rows=mysqli_fetch_assoc($result)):?>
+                    <tr>
+                    <th hidden><?php echo $rows['proid'];?></th>
+                    <td style="width:20%"><?php echo $rows['name'];?></td>
+                    <td style="width:20%"><?php echo $rows['cat_name'];?></td>
+                    <td style="width:20%"><?php echo $rows['supplier'];?></td>
+                    <td style="width:15%"><?php echo $rows['new_quantity']." ".$rows['measurement_unit'];?></td>
+                    <td style="w">
+                        <i class="fa fa-eye"></i>
                         <i class="fa fa-edit"></i>
                         <i class="fa fa-trash"></i>
                     </td>
-                </tr>
+                    </tr>
+                <?php endwhile;?>
+                
             </tbody>
         </table>
     </div>

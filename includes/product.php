@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-            <?php $result=$conn->query("select * from (select products.id as proid, name, photo from products) products  order by proid desc");
+            <?php $result=$conn->query("select * from (select products.id as proid, name, photo, category from products) products  inner join category on category.id=products.category order by proid desc");
                     while($rows=mysqli_fetch_assoc($result)):?>
 
 
@@ -22,6 +22,7 @@
                     
                     <td style="width:40%">
                         <span>Name: <?php echo "<span class='tbl-detail pro-name'>".$rows['name']."</span>";?></span><br>
+                        <span>Category: <?php echo "<span class='tbl-detail pro-name'>".$rows['cat_name']."</span>";?></span>
                     </td>
                     <td>
                         <i class="fa fa-edit"></i>
@@ -37,6 +38,15 @@
         <form action=""id="frm-pro">
             <input type="hidden"id="txt-id"name="txt-id">
             <input type="text"placeholder="Item Name"name="name"id="txt-name"required>
+            <select name="category" id="txt-cat"required>
+            <option value=""selected="false"disabled>Category</option>
+            <?php
+                    $result=$conn->query("select * from category where status='1' order by id desc");
+                    while($row=mysqli_fetch_assoc($result)){?>
+                        <option value="<?php echo $row['id'];?>"><?php echo $row['cat_name'];?></option>
+                    <?php }
+                ?>
+            </select>
             <input type="file"name="file">
            
             <button>SAVE</button>

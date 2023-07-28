@@ -153,6 +153,7 @@ if($action=='btn-login'){
 }else if($action=="btn-pro"){
     $name=$_POST['name'];
     $id=$_POST['txt-id'];
+    $category=$_POST['category'];
     $targetDir = "products/";
     $fileName = basename($_FILES["file"]["name"]);
     $targetFilePath = $targetDir . $fileName;
@@ -178,12 +179,12 @@ if($action=='btn-login'){
                     if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
                         // Insert image file name into database
             
-                        $instqry="insert into products(name, photo) values(?,?)";
+                        $instqry="insert into products(name, photo, category) values(?,?,?)";
                         $inststmt=mysqli_stmt_init($conn);
                         if(!mysqli_stmt_prepare($inststmt,$instqry)){
                             echo "Failed Statements";
                         }else{
-                            mysqli_stmt_bind_param($inststmt,'ss',$name,$fileName);
+                            mysqli_stmt_bind_param($inststmt,'sss',$name,$fileName,$category);
                             mysqli_stmt_execute($inststmt);
                             echo "Product Added";
                             ?>
@@ -225,12 +226,12 @@ if($action=='btn-login'){
                         //delete the image
                         unlink($imageURL);
                     }
-                    $instqry="update products set name=?, photo=? where id=?";
+                    $instqry="update products set name=?, photo=?, category=? where id=?";
                     $inststmt=mysqli_stmt_init($conn);
                     if(!mysqli_stmt_prepare($inststmt,$instqry)){
                         echo "Failed Statements";
                     }else{
-                        mysqli_stmt_bind_param($inststmt,'sss',$name,$fileName,$id);
+                        mysqli_stmt_bind_param($inststmt,'ssss',$name,$fileName,$category,$id);
                         mysqli_stmt_execute($inststmt);
 
                         
@@ -295,7 +296,6 @@ if($action=='btn-login'){
 }else if($action=='btn-inventory'){
     $product=$_POST['product'];
     $supplier=$_POST['supplier'];
-    $category=$_POST['category'];
     $quantity=$_POST['quantity'];
     $unit=$_POST['unit'];
     $total=$_POST['buying-price'];
@@ -317,12 +317,12 @@ if($action=='btn-login'){
             </script>
             <?php
         }else{
-            $instqry="insert into inventory(product_id, supplier_id, category_id, previous_quantity, new_quantity, measurement_unit, total_bp) values(?,?,?,?,?,?,?)";
+            $instqry="insert into inventory(product_id, supplier_id, previous_quantity, new_quantity, measurement_unit, total_bp) values(?,?,?,?,?,?)";
             $inststmt=mysqli_stmt_init($conn);
             if(!mysqli_stmt_prepare($inststmt,$instqry)){
                 echo "Failed Statements";
             }else{
-                mysqli_stmt_bind_param($inststmt,'sssssss',$product,$supplier,$category,$quantity,$quantity,$unit,$total);
+                mysqli_stmt_bind_param($inststmt,'ssssss',$product,$supplier,$quantity,$quantity,$unit,$total);
                 mysqli_stmt_execute($inststmt);
                 echo "Item Added to Inventory";?>
                  <script>
