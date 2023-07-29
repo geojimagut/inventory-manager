@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 25, 2023 at 02:13 PM
+-- Generation Time: Jul 29, 2023 at 09:04 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,8 +39,33 @@ CREATE TABLE `category` (
 
 INSERT INTO `category` (`id`, `cat_name`, `status`) VALUES
 (7, 'Appliances', NULL),
-(9, 'Vegetables and Frutis', 1),
+(9, 'Vegetables and Frutis', NULL),
 (12, 'Phones and Tablets', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE `inventory` (
+  `id` int(200) NOT NULL,
+  `product_id` int(200) NOT NULL,
+  `supplier_id` int(200) NOT NULL,
+  `previous_quantity` int(200) NOT NULL,
+  `new_quantity` int(200) NOT NULL,
+  `measurement_unit` varchar(200) NOT NULL,
+  `total_bp` int(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `previous_quantity`, `new_quantity`, `measurement_unit`, `total_bp`) VALUES
+(1, 10, 6, 200, 200, 'Kg', 20000),
+(2, 11, 6, 200, 200, 'Units', 232332),
+(3, 12, 6, 23, 23, 'Units', 234);
 
 -- --------------------------------------------------------
 
@@ -51,15 +76,18 @@ INSERT INTO `category` (`id`, `cat_name`, `status`) VALUES
 CREATE TABLE `products` (
   `id` int(200) NOT NULL,
   `name` varchar(200) NOT NULL,
-  `photo` text NOT NULL
+  `photo` text NOT NULL,
+  `category` int(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `photo`) VALUES
-(10, 'Iphone 3', 'Mobile-Phone.jpg');
+INSERT INTO `products` (`id`, `name`, `photo`, `category`) VALUES
+(10, 'Iphone 3', 'Mobile-Phone.jpg', 12),
+(11, 'Lenovo', 'phone3.png', 12),
+(12, 'Cabbages', 'wp8947204-food-2021-wallpapers.jpg', 9);
 
 -- --------------------------------------------------------
 
@@ -78,7 +106,8 @@ CREATE TABLE `supplier` (
 
 INSERT INTO `supplier` (`id`, `supplier`) VALUES
 (5, 'Georges Kimagut'),
-(6, 'Daniella Wachogi');
+(6, 'Daniella Wachogi'),
+(8, 'Lucky Dawud');
 
 -- --------------------------------------------------------
 
@@ -111,6 +140,12 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `inventory`
+--
+ALTER TABLE `inventory`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -139,16 +174,22 @@ ALTER TABLE `category`
   MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `inventory`
+--
+ALTER TABLE `inventory`
+  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`

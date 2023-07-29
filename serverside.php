@@ -313,7 +313,26 @@ if($action=='btn-login'){
             ?>
             <script>
                 var status=confirm('Product already exists in the inventory, do you want to update?')
-                
+                if(status=="true"){
+                       <?php
+                        $instqry="update inventory set product_id =? , supplier_id =?, previous_quantity =? , new_quantity =? , measurement_unit =? , total_bp =? where product_id=? and previous_quantity > ?";
+                        $inststmt=mysqli_stmt_init($conn);
+                        if(!mysqli_stmt_prepare($inststmt,$instqry)){
+                            // echo "Failed Statements";
+                        }else{
+                            mysqli_stmt_bind_param($inststmt,'ssssssss',$product,$supplier,$quantity,$quantity,$unit,$total,$product, $final);
+                            mysqli_stmt_execute($inststmt);
+                            // echo "Inventory updated";
+                         } ?>
+                $('#la-jibu').html("Inventory updated");  
+                document.getElementById('jibu').style.display='flex'
+                setTimeout(() => {
+                    location.reload()
+                }, 2000);
+                    
+                }else{
+                    // do nothing
+                }
             </script>
             <?php
         }else{
